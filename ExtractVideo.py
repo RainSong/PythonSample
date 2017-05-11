@@ -31,19 +31,21 @@ def extract():
     #     os.mkdir(imagePath)
 
 
-    vidcap = cv2.VideoCapture(filePath)
+    vidcap = cv2.VideoCapture(filePath.encode('utf-8'))
     success,image = vidcap.read()
-    print success
+    if not success:
+        print('读取视频内容失败')
+        return False
     #cv2.imwrite("frame.jpg", image)
 
     count = 0
     framerate = vidcap.get(5)
-    print "framerate:", framerate
+    print("framerate:", framerate)
     framecount = vidcap.get(7)
-    print "framecount:", framecount
+    print("framecount:", framecount)
     vidcap.set(5,1)
     newframerate = vidcap.get(5)
-    print "newframerate:", newframerate
+    print("newframerate:", newframerate)
 
     while success:
       success,image = vidcap.read()
@@ -63,7 +65,7 @@ def extract():
 
 
 if __name__ == '__main__':
-    filePath = raw_input("请输入视频文件路径：")
+    filePath = unicode(raw_input("请输入视频文件路径："),'utf-8')
     while(True):
         if not os.path.isfile(filePath):
             filePath = raw_input("“{0}”不是有效的文件路径，请重新输入：".format(filePath))
@@ -79,9 +81,10 @@ if __name__ == '__main__':
         else:
             break
 
-    print("视频文件“{0}”将被分解为图片，源文件不会更改...\r".format(filePath))
-    print("图片保存路径：{0}".format(imagePath))
-    extract()
-    isOpen = raw_input("分解完成，是否打开图片文件夹？(是：Y/y，否：N/n)")
-    if isOpen == 'Y' or isOpen == 'y':
-        os.startfile(imagePath)
+    print("视频文件“{0}”将被分解为图片，源文件不会更改...\r".format(filePath.encode('utf-8')))
+    print("图片保存路径：{0}".format(imagePath.encode('utf-8')))
+    success = extract()
+    if success:
+        isOpen = raw_input("分解完成，是否打开图片文件夹？(是：Y/y，否：N/n)")
+        if isOpen == 'Y' or isOpen == 'y':
+            os.startfile(imagePath)
